@@ -1,0 +1,29 @@
+__llvm_bash_file="${BASH_SOURCE[0]}"
+if [ -z "$__llvm_initial_path" ]; then
+  __llvm_initial_path="$PATH"
+fi
+export PATH="$HOME/bin/ccache:$__llvm_initial_path"
+
+function llvm_reload() {
+  source "$__llvm_bash_file"
+}
+
+function llvm_config_mlir() {
+  local extra="$@"
+  set -x
+  cmake -GNinja \
+    "-H$(realpath .)/llvm" \
+    "-B$(realpath build)" \
+    -DLLVM_INSTALL_UTILS=ON \
+    -DLLVM_ENABLE_PROJECTS=mlir \
+    -DLLVM_TARGETS_TO_BUILD="X86" \
+    -DLLVM_INCLUDE_TOOLS=ON \
+    -DLLVM_BUILD_TOOLS=OFF \
+    -DLLVM_INCLUDE_TESTS=ON \
+    "-DCMAKE_INSTALL_PREFIX=$HOME/install/mlir" \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_ENABLE_RTTI=OFF \
+    $extra
+  set +x
+}
