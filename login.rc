@@ -1,7 +1,7 @@
 __LOGIN_RC_FILE="${BASH_SOURCE[0]}"
 
 # Path customizations
-__LOCAL_PATH=""
+__LOCAL_PATH="$HOME/anaconda3/bin:$HOME/bin:$HOME/bin/ccache:$HOME/dotfiles/bin"
 
 export CTEST_OUTPUT_ON_FAILURE=1
 export NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
@@ -21,11 +21,11 @@ function relogin() {
 
 # Save the login path so that relogin can just modify.
 if [ -z "${__LOGIN_PATH}" ]; then
-  __LOGIN_PATH="$__LOCAL_PATH:$PATH"
+  __LOGIN_PATH="$PATH"
 fi
 
 # All path modifications here.
-export PATH="$HOME/bin/ccache:${__LOGIN_PATH}"
+export PATH="$__LOCAL_PATH:${__LOGIN_PATH}"
 
 function die() {
   echo "$*"
