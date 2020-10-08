@@ -24,12 +24,12 @@ function docker_login() {
   docker_execme -it "$container" "$shell"
 }
 
-# Runs an interactive, named container as root.
+# Runs an interactive, named container as the default user.
 # The container will be destoyed when the interactive session ends.
 # Syntax:
-#   docker_runit_root {image} {container_name} ...args...
+#   docker_runit {image} {container_name} ...args...
 # If the container_name is empty, does not set a specific name.
-function docker_runit_root() {
+function docker_runit() {
   local image="$1"
   shift
   local container="$1"
@@ -43,7 +43,7 @@ function docker_runit_root() {
 
 # Starts a detached container, running as root.
 # Syntax: docker_start_root {image} {container_name} ...args...
-function docker_start_root() {
+function docker_start() {
   local image="$1"
   local container="$2"
   shift
