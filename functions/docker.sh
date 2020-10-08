@@ -27,17 +27,18 @@ function docker_login() {
 # Runs an interactive, named container as root.
 # The container will be destoyed when the interactive session ends.
 # Syntax:
-#   docker_runit_root {image} {container_name} [{shell}] ...args...
+#   docker_runit_root {image} {container_name} ...args...
 # If the container_name is empty, does not set a specific name.
 function docker_runit_root() {
   local image="$1"
-  local container="$2"
-  local shell="${3-/bin/bash}"
+  shift
+  local container="$1"
+  shift
   local name_args=""
   if ! [ -z "$container" ]; then
     name_args="--name $container"
   fi
-  docker run --rm $name_args "$@" -it "$image" "$shell"
+  docker run --rm $name_args "$@" -it "$image" "/bin/bash"
 }
 
 # Starts a detached container, running as root.
@@ -45,11 +46,34 @@ function docker_runit_root() {
 function docker_start_root() {
   local image="$1"
   local container="$2"
-  docker run -d --rm --name "$container" "$image" tail -f /dev/null
+  shift
+  shift
+  if [ -z "$image" ] || [ -z "$container" ]; then
+    echo "Expected args: {image} {container_name}"
+    return 1
+  fi
+  echo "Starting container $container from $image..."
+  docker run -d --rm "$@" --name "$container" "$image" tail -f /dev/null
 }
 
 # Ubuntu based containers do not install sudo by default. Do it.
 function docker_install_sudo() {
   local container="$1"
   docker exec -it "$container" apt install -y sudo
+}
+
+# From a root image, build an image just for me, hard-coded with a user
+# matching the host user and a home directory that mirrors that on the host.
+function docker_build_for_me() {
+  local root_image="$1"
+  echo "
+    FROM $root_image
+
+    USER root
+    RUN apt install -y sudo byobu git procps lsb-release
+    RUN addgroup --gid $(id -g $USER) $USER
+    RUN mkdir -p $(dirname $HOME) && useradd -m -d $HOME --gid $(id -g $USER) --uid $(id -u $USER) $USER
+    RUN echo '$USER ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+    USER $USER
+  " | docker build --tag me/${root_image} -
 }
