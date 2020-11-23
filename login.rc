@@ -1,7 +1,7 @@
 __LOGIN_RC_FILE="${BASH_SOURCE[0]}"
 
 # Path customizations
-__LOCAL_PATH="$HOME/anaconda3/bin:$HOME/bin:$HOME/bin/ccache:$HOME/dotfiles/bin"
+__LOCAL_PATH="$HOME/bin:$HOME/bin/ccache:$HOME/dotfiles/bin"
 
 export CTEST_OUTPUT_ON_FAILURE=1
 export NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
@@ -9,14 +9,14 @@ LLVM_VERSION=10
 export PATH=~/bin:$PATH
 export CC=clang-$LLVM_VERSION
 export CXX=clang++-$LLVM_VERSION
-export LDFLAGS=-fuse-ld=$(which ld.lld-$LLVM_VERSION)
+#export LDFLAGS=-fuse-ld=$(which ld.lld-$LLVM_VERSION)
 
 # Aliases
 alias iree-opt="srun iree/tools/iree-opt"
 
 function relogin() {
   echo "Reloading from $__LOGIN_RC_FILE"
-  source "$__LOGIN_RC_FILE" 
+  source "$__LOGIN_RC_FILE"
 }
 
 # Save the login path so that relogin can just modify.

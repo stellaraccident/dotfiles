@@ -1,5 +1,5 @@
 function npcomp_docker_build() {
-  if ! [ -f "docker/pytorch-1.6" ]; then
+  if ! [ -f "docker/pytorch-1.6/Dockerfile" ]; then
     echo "Please run out of mlir-npcomp/ source directory..."
     return 1
   fi
@@ -10,8 +10,8 @@ function npcomp_docker_build() {
 
 function npcomp_docker_start() {
   docker_start me/npcomp:build-pytorch-1.6 npcomp \
-    --mount source=npcomp-build,target=/build \
-    --mount type=bind,source=$HOME/src/mlir-npcomp,target=/src/mlir-npcomp
+    --mount type=bind,source=$HOME/src/mlir-npcomp,target=/src/mlir-npcomp \
+    #--mount source=npcomp-build,target=/build \
 }
 
 function npcomp_docker_stop() {
