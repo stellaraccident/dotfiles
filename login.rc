@@ -1,7 +1,7 @@
 __LOGIN_RC_FILE="${BASH_SOURCE[0]}"
 
 # Path customizations
-__LOCAL_PATH="$HOME/bin:$HOME/bin/ccache:$HOME/dotfiles/bin"
+__LOCAL_PATH="$HOME/bin:$HOME/dotfiles/bin"
 
 export CTEST_OUTPUT_ON_FAILURE=1
 export NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1

@@ -77,3 +77,19 @@ function docker_build_for_me() {
     USER $USER
   " | docker build --tag me/${root_image} -
 }
+
+# From a root image, build an image just for me, hard-coded with a user
+# matching the host user and a home directory that mirrors that on the host.
+function docker_build_for_me_rhel() {
+  local root_image="$1"
+  echo "
+    FROM $root_image
+
+    USER root
+    RUN yum install -y sudo byobu git procps gdb less nano vim
+    RUN groupadd --gid $(id -g $USER) $USER
+    RUN mkdir -p $(dirname $HOME) && useradd -m -d $HOME --gid $(id -g $USER) --uid $(id -u $USER) $USER
+    RUN echo '$USER ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+    USER $USER
+  " | docker build --tag me/${root_image} -
+}
